@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers\Tenant;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\System\Configuration;
 use App\Models\Tenant\Configuration as TenantConfiguration;
 use App\Models\Tenant\Module;
@@ -10,7 +11,14 @@ class ModuleViewComposer
 {
     public function compose($view)
     {
-        $modules = auth()->user()->modules()->pluck('value')->toArray();
+        if (!Auth::check()) {
+            // Redirige al login si no hay sesión activa
+            redirect()->route('login')->send();
+            exit;
+        }
+    
+        $user = Auth::user();
+        $modules = $user->modules()->pluck('value')->toArray();
         /*
         $systemConfig = Configuration::select('use_login_global')->first();
         */
