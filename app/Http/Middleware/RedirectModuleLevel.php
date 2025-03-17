@@ -34,9 +34,10 @@
          */
         public function handle($request, Closure $next)
         {
-
-            /** @var User $user */
-            $user = $request->user();
+            $user= $request->user();
+            if (!$user) {
+                return redirect("login"); // O manejar el error como prefieras
+            }
             $level = $user->getLevel();
             $path = explode('/', $request->path());
             $levels = $user->getLevels();
