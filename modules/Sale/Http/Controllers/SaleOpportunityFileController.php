@@ -102,21 +102,18 @@ class SaleOpportunityFileController extends Controller
 
     }
 
-    public function download($filename) {
-        return Storage::disk('tenant')->download('sale_opportunity_files'.DIRECTORY_SEPARATOR.$filename);
-    }
-
-    /**
-     * @param $id
-     *
-     * @return array
-     */
-    public function searchItemById($id)
+    public function download($filename)
     {
-        $items =  SearchItemController::searchByIdToModal($id);
-        return compact('items');
-
+        $file_path = 'sale_opportunity_files'.DIRECTORY_SEPARATOR.$filename;
+    
+        if (Storage::disk('tenant')->exists($file_path)) {
+            return Storage::disk('tenant')->download($file_path);
+        } else {
+            return response()->view('errors.file_not_found');
+        }
     }
+    
+    
 
     /**
      * @param Request $request
